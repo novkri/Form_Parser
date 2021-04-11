@@ -38,7 +38,6 @@ function parseFile(readerResult) {
 
   try {
     const result = JSON.parse(readerResult)
-    // console.log(result)
 
     formContainer.classList.remove('hide')
     uploadGroup.classList.add('hide')
@@ -71,23 +70,29 @@ function populateFields(fields) {
     myFormGroup.classList.add('form-group')
 
     let myLabel = document.createElement('label')
-    // TODO: add for attr for label AND input
+    myLabel.setAttribute('for', i)
 
     let myInput = document.createElement('input')
     myInput.classList.add('form-control')
+    myInput.setAttribute('id', i)
 
 
     myLabel.textContent = fields[i].label
 
-    // ?? add func for parsing inputs ?
-    // AND check if attrs exists
-    myInput.type = fields[i].input.type
-    myInput.required = fields[i].input.required
-    myInput.placeholder = fields[i].input.placeholder
-    // mask!
-    // multiple
-    // filetype
-    // colors
+
+    for (const attr in fields[i].input) {
+      // console.log(attr, fields[i].input[attr]);
+
+      // parse tel mask!
+      if (attr === 'mask') {
+        parseInputWithMask(myInput, fields[i].input[attr])
+      }
+      
+      // parse multiple select
+      // parse file filetype
+      // parse color colors
+      myInput[attr] = fields[i].input[attr]
+    }
 
 
     myFormGroup.appendChild(myLabel)
@@ -96,6 +101,46 @@ function populateFields(fields) {
   }
 }
 
+function parseInputWithMask(input, mask) {
+  input.type = 'text'
+  input.placeholder = mask
+
+  function inputHandler() {
+    const value = input.value;
+
+    const literalPattern = /[9\*]/;
+
+    const numberPattern = /[0-9]/;
+
+    let newValue = "";
+
+    try {
+      const maskLength = mask.length;
+      let valueIndex = 0;
+      let maskIndex = 0;
+
+      while (maskIndex < maskLength) {
+        if (maskIndex >= value.length) break;
+
+        // Если сопоставлений не было, метод вернёт значение null.
+        if (mask[maskIndex] === "9" && value[valueIndex].match(numberPattern) === null) break; 
+
+        while (mask[maskIndex].match(literalPattern) === null) {
+          if (value[valueIndex] === mask[maskIndex]) break;
+          newValue += mask[maskIndex++];
+        }
+        newValue += value[valueIndex++];
+        maskIndex++;
+      }
+
+      input.value = newValue;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  input.addEventListener('input', e => inputHandler(e));
+}
 
 function populateRefs(refs) {
   let myRefsContainer = document.createElement('div')
@@ -103,14 +148,14 @@ function populateRefs(refs) {
 
 
   for (let i = 0; i < refs.length; i++) {
-    console.log(refs[i]);
+    // console.log(refs[i]);
     let myFormGroup = document.createElement('div')
     // ?
     myFormGroup.classList.add('form-group')
 
 
     if (refs[i].input) {
-      console.log(refs[i].input);
+      // console.log(refs[i].input);
       myFormGroup.classList.add('form-check')
   
       let myInput = document.createElement('input')
@@ -141,7 +186,7 @@ function populateRefs(refs) {
 
     // what it is?
     if (refs[i]['text without ref']) {
-      console.log(refs[i]['text without ref']);
+      // console.log(refs[i]['text without ref']);
 
       let myPar = document.createElement('p')
       // myPar.classList.add('???') add class anotherr
@@ -155,7 +200,7 @@ function populateRefs(refs) {
 
     // what it is?
     if (refs[i].text) {
-      console.log(refs[i].text);
+      // console.log(refs[i].text);
       
       let myPar2 = document.createElement('p')
       // myDiv.classList.add('???') add class
@@ -168,7 +213,7 @@ function populateRefs(refs) {
 
     // what it is?
     if (refs[i].ref) {
-      console.log(refs[i].ref);
+      // console.log(refs[i].ref);
       // ????
     }
 
