@@ -1,3 +1,4 @@
+const formContainer = document.getElementById('form-container')
 const form = document.getElementById('form')
 const header = document.getElementById('filename')
 
@@ -10,8 +11,14 @@ const resetBtn = document.getElementById('resetBtn')
 uploadInput.addEventListener('change', readFile)
 resetBtn.addEventListener('click', resetForm)
 
+
+formContainer.classList.add('hide')
+
+let divError = document.createElement('div')
+divError.classList.add('alert', 'alert-danger')
+
+
 function readFile() {
-  // TODO: check if file exists
   const currentFile = uploadInput.files[0]
 
   let reader = new FileReader()
@@ -19,30 +26,40 @@ function readFile() {
 
   reader.onload = function() {
     parseFile(reader.result)
-
-    console.log('load');
-    // ???? 
-    // and Toggle this somewhere
-    uploadGroup.classList.add('hide')
-    resetBtn.classList.remove('hide')
   }
 
   reader.onerror = function() {
-    // TODO: error
     console.log(reader.error);
   }
 }
 
 function parseFile(readerResult) {
-  const result = JSON.parse(readerResult)
-  console.log(result)
-  header.textContent = result.name
-  // fields 
-  populateFields(result.fields)
-  // refs IF exists, TODO: check
-  populateRefs(result.references)
-  // buttons IF exists
-  populateBtns(result.buttons)
+  divError.textContent = 'Загрузите файл в формате json'
+
+  try {
+    const result = JSON.parse(readerResult)
+    // console.log(result)
+
+    formContainer.classList.remove('hide')
+    uploadGroup.classList.add('hide')
+    resetBtn.classList.remove('hide')
+
+
+    if (uploadGroup.contains(divError)) {
+      uploadGroup.removeChild(divError)
+    }
+
+    header.textContent = result.name
+
+    // fields 
+    populateFields(result.fields)
+    // refs IF exists, TODO: check
+    populateRefs(result.references)
+    // buttons IF exists
+    populateBtns(result.buttons)
+  } catch (error) {
+    uploadGroup.appendChild(divError)
+  }
 }
 
 
@@ -185,4 +202,5 @@ function resetForm() {
 
   form.textContent = ''
   header.textContent = ''
+  formContainer.classList.add('hide')
 }
