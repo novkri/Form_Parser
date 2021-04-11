@@ -1,14 +1,26 @@
-* {
+/* * {
   margin: 0;
   padding: 0;
-}
+} */
 
 body {
   background-color: rgb(231, 229, 229);
 }
 
+/* ??? */
+/* button {
+  max-width: 10em;
+  width: 100%;
+} */
+
+label {
+  margin-bottom: .5rem;
+}
+
 .container {
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
+  padding-top: 3em;
 }
 
 .hide {
@@ -17,24 +29,65 @@ body {
 
 .card {
   margin: auto;
+  width: 100%;
+  padding: 1em;
+}
+
+#form-container {
+  margin-bottom: 3em;
+}
+
+#form-container > div.card-body {
+  border-bottom: 1px solid rgb(202, 202, 202);
+}
+
+#form > .form-group {
+  padding-bottom: 1em;
 }
 
 .refs-container {
-  padding-top: 20px;
+  padding: 1em 0;
   display: flex;
 }
 
 .check__text {
   display: inline-flex;
+  margin: 0;
 }
 
 
 .btns-container {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding-top: 1em;
 }
 
 .alert {
+  margin-top: 1em;
   margin-bottom: 0 !important;
+}
+
+
+/* // Малые девайсы («ландшафтные», < 768px) */
+@media (min-width: 575.98px) { 
+  .card {
+    max-width: 90%;
+  }
+ }
+
+/* // Средние девайсы («таблетки», < 992px)  */
+@media (min-width: 767.98px) {  }
+
+/* // Большие девайсы (большие десктопы, < 1200px) */
+@media (min-width: 991.98px) { 
+  .card {
+    max-width: 80%;
+  }
+ }
+
+/* // Экстрабольшие девайсы (большие десктопы) */
+@media (min-width: 1199.98px) { 
+  .card {
+    max-width: 60%;
+  }
 }

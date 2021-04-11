@@ -188,6 +188,12 @@ function populateBtns(btns) {
 
     myBtn.textContent = btns[i].text
 
+    // not sure !!!
+    myBtn.classList.add('btn-success')
+    if (btns[i].text.toLowerCase() === 'cancel' ) {
+      myBtn.classList.add('btn-danger')
+    }
+
     myBtnsContainer.appendChild(myBtn)
   }
 
@@ -200,6 +206,7 @@ function resetForm() {
   uploadGroup.classList.remove('hide')
   resetBtn.classList.add('hide')
 
+  uploadInput.value = ''
   form.textContent = ''
   header.textContent = ''
   formContainer.classList.add('hide')
