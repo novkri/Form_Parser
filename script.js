@@ -1,9 +1,14 @@
 const form = document.getElementById('form')
-const uploadInput = document.getElementById('upload')
-const uploadGroup = document.getElementById('upload-group')
 const header = document.getElementById('filename')
 
+const uploadInput = document.getElementById('upload')
+const uploadGroup = document.getElementById('upload-group')
+
+const resetBtn = document.getElementById('resetBtn')
+
+
 uploadInput.addEventListener('change', readFile)
+resetBtn.addEventListener('click', resetForm)
 
 function readFile() {
   // TODO: check if file exists
@@ -15,9 +20,11 @@ function readFile() {
   reader.onload = function() {
     parseFile(reader.result)
 
+    console.log('load');
     // ???? 
-    // and the trmove somewhere
-    uploadGroup.classList.add('uploaded')
+    // and Toggle this somewhere
+    uploadGroup.classList.add('hide')
+    resetBtn.classList.remove('hide')
   }
 
   reader.onerror = function() {
@@ -168,4 +175,14 @@ function populateBtns(btns) {
   }
 
   form.appendChild(myBtnsContainer)
+}
+
+
+// reset
+function resetForm() {
+  uploadGroup.classList.remove('hide')
+  resetBtn.classList.add('hide')
+
+  form.textContent = ''
+  header.textContent = ''
 }

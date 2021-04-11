@@ -11,12 +11,12 @@ body {
   height: 100vh;
 }
 
-.card {
-  margin: auto;
+.hide {
+  display: none !important;
 }
 
-.uploaded {
-  display: none;
+.card {
+  margin: auto;
 }
 
 .refs-container {
