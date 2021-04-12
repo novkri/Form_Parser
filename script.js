@@ -82,12 +82,7 @@ function populateFields(fields) {
 
     let myLabel = createMyElem('label', [], fields[i].label, {nameAttr: 'for', valueAttr: i})
 
-    // let myInput = document.createElement('input')
-    // myInput.classList.add('form-control')
-    // myInput.setAttribute('id', i)
     let myInput = createMyElem('input', ['form-control'], '', {nameAttr: 'id', valueAttr: i})
-
-    // myLabel.textContent = fields[i].label
 
 
     for (const attr in fields[i].input) {
@@ -101,12 +96,6 @@ function populateFields(fields) {
 
       // parse multiple select  "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
-        // OR 
-        // myInput = document.createElement('select')
-        // myInput.classList.add('custom-select')
-        // myInput.setAttribute('id', i)
-        // parseSelect(myInput, fields[i].input['technologies'])
-
         myInput = parseSelectWithCheckboxes(myInput, fields[i].input['technologies'])
       }
 
@@ -169,21 +158,11 @@ function parseSelectWithCheckboxes(input, techArr) {
 
   for (const option in techArr) {
     let groupDiv = createMyElem('div', ['form-check'])
-    // let groupDiv = document.createElement('div')
-    // groupDiv.classList.add('form-check')
 
     let myCheckBox = createMyElem('input', ['form-check-input'], '', { nameAttr: 'value', valueAttr: techArr[option] }, { nameAttr: 'id', valueAttr: techArr[option] })
-    // let myCheckBox = document.createElement('input')
     myCheckBox.type = 'checkbox'
-    // myCheckBox.setAttribute('value', techArr[option])
-    // myCheckBox.setAttribute('id', techArr[option])
-    // myCheckBox.classList.add('form-check-input')
 
     let myCheckboxLabel = createMyElem('label', ['form-check-label'], techArr[option], { nameAttr: 'for', valueAttr: techArr[option] })
-    // let myCheckboxLabel = document.createElement('label')
-    // myCheckboxLabel.setAttribute('for', techArr[option])
-    // myCheckboxLabel.textContent = techArr[option]
-    // myCheckboxLabel.classList.add('form-check-label')
 
 
     groupDiv.appendChild(myCheckBox)
@@ -194,28 +173,14 @@ function parseSelectWithCheckboxes(input, techArr) {
   return parentDiv
 }
 
-// function parseSelect(input, techArr) {
-//   for (const option in techArr) {
-//     let myOption = document.createElement('option')
-//     myOption.textContent = techArr[option]
-//     myOption.value = techArr[option]
-
-//     input.appendChild(myOption)
-//   }
-// }
-
 
 function populateRefs(refs) {
   let myRefsContainer = createMyElem('div', ['refs-container'])
-  // let myRefsContainer = document.createElement('div')
-  // myRefsContainer.classList.add('refs-container')
 
 
   for (let i = 0; i < refs.length; i++) {
     // console.log(refs[i]);
     let myFormGroup = createMyElem('div', ['form-group'])
-    // let myFormGroup = document.createElement('div')
-    // myFormGroup.classList.add('form-group')
 
 
     if (refs[i].input) {
@@ -223,8 +188,6 @@ function populateRefs(refs) {
       myFormGroup.classList.add('form-check')
   
       let myInput = createMyElem('input', ['form-check-input'])
-      // let myInput = document.createElement('input')
-      // myInput.classList.add('form-check-input')
 
 
       // ?? add func for parsing inputs ?
@@ -234,9 +197,6 @@ function populateRefs(refs) {
       myInput.type = type
       myInput.required = required
       checked === true ? myInput.setAttribute('checked', checked) : ''
-      // myInput.type = refs[i].input.type
-      // myInput.required = refs[i].input.required
-      // myInput.checked = refs[i].input.checked
 
       myFormGroup.appendChild(myInput)
 
@@ -246,9 +206,6 @@ function populateRefs(refs) {
       // console.log(refs[i].label);
       
       let myLabel = createMyElem('label', ['form-check-label'], refs[i].label)
-      // let myLabel = document.createElement('label')
-      // myLabel.classList.add('form-check-label')
-      // myLabel.textContent = refs[i].label
 
       myFormGroup.appendChild(myLabel)
     }
@@ -259,10 +216,6 @@ function populateRefs(refs) {
       // console.log(refs[i]['text without ref']);
 
       let myPar = createMyElem('p', ['check__text'], refs[i]['text without ref'])
-      // let myPar = document.createElement('p')
-      // myPar.classList.add('check__text')
-      // myPar.textContent = refs[i]['text without ref']
-
       myFormGroup.appendChild(myPar)
     }
 
@@ -271,8 +224,6 @@ function populateRefs(refs) {
       // console.log(refs[i].text);
       
       let myPar2 = createMyElem('p', ['check__text'])
-      // let myPar2 = document.createElement('p')
-      // myPar2.classList.add('check__text')
       myPar2.textContent = refs[i].text
 
       myFormGroup.appendChild(myPar2)
