@@ -61,6 +61,7 @@ function parseFile(readerResult) {
   }
 }
 
+// ???
 function readImgFile(e) {
   const currentFiles = e.target.files
 
@@ -71,7 +72,6 @@ function readImgFile(e) {
     // ?
     if (file.type !== `image/png`) {
       // return 
-      e.target.files = []
       console.log('error');
     } else {
       let reader = new FileReader()
@@ -81,23 +81,6 @@ function readImgFile(e) {
 
     
   }
-  // ! ?
-  // if (currentFile.type !== 'images/png') {
-  //   return -1
-  // } else {
-  //   let reader = new FileReader()
-  //   reader.readAsDataURL(currentFiles)
-  // }
-  
-
-  // console.log(reader.result);
-  // reader.onload = function() {
-  //   parseFile(reader.result)
-  // }
-
-  // reader.onerror = function() {
-  //   console.log(reader.error);
-  // }
 }
 
 function populateFields(fields) {
@@ -134,6 +117,7 @@ function populateFields(fields) {
 
       // parse file filetype
       if (attr === 'type' && fields[i].input[attr] === 'file') {
+        myInput.classList.replace('form-control', 'form-control-file')
 
         if (fields[i].input.filetype) {
           let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
@@ -141,10 +125,10 @@ function populateFields(fields) {
           myInput.setAttribute('accept', typesString)
         }
         
-
         myInput.addEventListener('change', e => readImgFile(e))
       
       }
+
       // parse color colors
     }
 
@@ -226,30 +210,6 @@ function parseSelectWithCheckboxes(techArr) {
   return parentDiv
 }
 
-function parseFileInput(field, idx) {
-  let parentDiv = document.createElement('div')
-  // parentDiv.classList.add('custom-file')
-
-
-  let myInput = document.createElement('input')
-  myInput.type = field.type
-  myInput.setAttribute('id', idx)
-  // myInput.classList.add('custom-file-input')
-
-  // let myLabel = document.createElement('label')
-  // myLabel.setAttribute('for', idx)
-  // myLabel.textContent = 'Выберите файл'
-  // myLabel.classList.add('custom-file-label')
-
-  // parentDiv.append(myLabel)
-  parentDiv.append(myInput)
-
-  myInput.addEventListener('change', e => readImgFile(e))
-
-
-  return parentDiv
-}
-
 
 function populateRefs(refs) {
   let myRefsContainer = document.createElement('div')
@@ -268,10 +228,10 @@ function populateRefs(refs) {
       let myInput = document.createElement('input')
       myInput.classList.add('form-check-input')
 
-
-      myInput.type = refs[i].input.type
-      myInput.required = refs[i].input.required
-      myInput.checked = refs[i].input.checked
+      let {type, required, checked} = refs[i].input
+      myInput.type = type
+      myInput.required = required
+      myInput.checked = checked === true ? checked : ''
 
       myFormGroup.append(myInput)
 
@@ -346,7 +306,6 @@ function resetForm() {
 
   uploadInput.value = ''
   form.textContent = ''
-  // form.remove(myFormGroup)
   header.textContent = ''
   formContainer.classList.add('hide')
 }
