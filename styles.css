@@ -17,6 +17,10 @@ label {
   margin-bottom: .5rem;
 }
 
+.form-check {
+  cursor: pointer;
+}
+
 .container {
   height: 100%;
   min-height: 100vh;
@@ -66,6 +70,11 @@ label {
   margin-top: 1em;
   margin-bottom: 0 !important;
 }
+
+.custom-file-input:lang(en)~.custom-file-label::after {
+  content: "Загрузить";
+}
+
 
 
 /* // Малые девайсы («ландшафтные», < 768px) */

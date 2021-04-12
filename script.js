@@ -83,12 +83,25 @@ function populateFields(fields) {
     for (const attr in fields[i].input) {
       // console.log(attr, fields[i].input[attr]);
 
-      // parse tel mask!
+      // parse mask
       if (attr === 'mask') {
         parseInputWithMask(myInput, fields[i].input[attr])
       }
       
-      // parse multiple select
+
+      // parse multiple select  "technologies"
+      if (attr === 'type' && fields[i].input[attr] === 'technology') {
+        // OR 
+        // myInput = document.createElement('select')
+        // myInput.classList.add('custom-select')
+        // myInput.setAttribute('id', i)
+
+        // parseSelect(myInput, fields[i].input['technologies'])
+
+        myInput = parseSelectWithCheckboxes(myInput, fields[i].input['technologies'])
+      }
+
+
       // parse file filetype
       // parse color colors
       myInput[attr] = fields[i].input[attr]
@@ -141,6 +154,43 @@ function parseInputWithMask(input, mask) {
 
   input.addEventListener('input', e => inputHandler(e));
 }
+
+function parseSelectWithCheckboxes(input, techArr) {
+  let parentDiv = document.createElement('div')
+
+  for (const option in techArr) {
+    let groupDiv = document.createElement('div')
+    groupDiv.classList.add('form-check')
+
+    let myCheckBox = document.createElement('input')
+    myCheckBox.type = 'checkbox'
+    myCheckBox.setAttribute('value', techArr[option])
+    myCheckBox.setAttribute('id', techArr[option])
+    myCheckBox.classList.add('form-check-input')
+
+    let myCheckboxLabel = document.createElement('label')
+    myCheckboxLabel.setAttribute('for', techArr[option])
+    myCheckboxLabel.textContent = techArr[option]
+    myCheckboxLabel.classList.add('form-check-label')
+
+
+    groupDiv.appendChild(myCheckBox)
+    groupDiv.appendChild(myCheckboxLabel)
+    parentDiv.appendChild(groupDiv)
+  }
+
+  return parentDiv
+}
+// function parseSelect(input, techArr) {
+//   for (const option in techArr) {
+//     let myOption = document.createElement('option')
+//     myOption.textContent = techArr[option]
+//     myOption.value = techArr[option]
+
+//     input.appendChild(myOption)
+//   }
+// }
+
 
 function populateRefs(refs) {
   let myRefsContainer = document.createElement('div')
