@@ -57,10 +57,48 @@ function parseFile(readerResult) {
     // buttons IF exists
     populateBtns(result.buttons)
   } catch (error) {
-    uploadGroup.appendChild(divError)
+    uploadGroup.append(divError)
   }
 }
 
+function readImgFile(e) {
+  const currentFiles = e.target.files
+
+  console.log(currentFiles);
+
+  for (const file of currentFiles) {
+    console.log(file);
+    // ?
+    if (file.type !== `image/png`) {
+      // return 
+      e.target.files = []
+      console.log('error');
+    } else {
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      console.log(reader.result);
+    }
+
+    
+  }
+  // ! ?
+  // if (currentFile.type !== 'images/png') {
+  //   return -1
+  // } else {
+  //   let reader = new FileReader()
+  //   reader.readAsDataURL(currentFiles)
+  // }
+  
+
+  // console.log(reader.result);
+  // reader.onload = function() {
+  //   parseFile(reader.result)
+  // }
+
+  // reader.onerror = function() {
+  //   console.log(reader.error);
+  // }
+}
 
 function populateFields(fields) {
   for (let i = 0; i < fields.length; i++) {
@@ -79,6 +117,8 @@ function populateFields(fields) {
 
 
     for (const attr in fields[i].input) {
+      myInput[attr] = fields[i].input[attr]
+
       // mask
       if (attr === 'mask') {
         parseInputWithMask(myInput, fields[i].input[attr])
@@ -87,26 +127,31 @@ function populateFields(fields) {
 
       // multiple select  "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
-        // OR 
-        // myInput = document.createElement('select')
-        // myInput.classList.add('custom-select')
-        // myInput.setAttribute('id', i)
-
-        // parseSelect(myInput, fields[i].input['technologies'])
-
-        myInput = parseSelectWithCheckboxes(myInput, fields[i].input['technologies'])
+        myInput = parseSelectWithCheckboxes(fields[i].input['technologies'])
+        // myInput.replaceWith(...parseSelectWithCheckboxes(fields[i].input['technologies']))
+      
       }
 
-
       // parse file filetype
+      if (attr === 'type' && fields[i].input[attr] === 'file') {
+
+        if (fields[i].input.filetype) {
+          let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
+          let typesString = imgTypes.join(', ')
+          myInput.setAttribute('accept', typesString)
+        }
+        
+
+        myInput.addEventListener('change', e => readImgFile(e))
+      
+      }
       // parse color colors
-      myInput[attr] = fields[i].input[attr]
     }
 
 
-    myFormGroup.appendChild(myLabel)
-    myFormGroup.appendChild(myInput)
-    form.appendChild(myFormGroup)
+    myFormGroup.append(myLabel)
+    myFormGroup.append(myInput)
+    form.append(myFormGroup)
   }
 }
 
@@ -151,8 +196,9 @@ function parseInputWithMask(input, mask) {
   input.addEventListener('input', e => inputHandler(e));
 }
 
-function parseSelectWithCheckboxes(input, techArr) {
+function parseSelectWithCheckboxes(techArr) {
   let parentDiv = document.createElement('div')
+  // let result = []
 
   for (const option in techArr) {
     let groupDiv = document.createElement('div')
@@ -170,22 +216,39 @@ function parseSelectWithCheckboxes(input, techArr) {
     myCheckboxLabel.classList.add('form-check-label')
 
 
-    groupDiv.appendChild(myCheckBox)
-    groupDiv.appendChild(myCheckboxLabel)
-    parentDiv.appendChild(groupDiv)
+    groupDiv.append(myCheckBox)
+    groupDiv.append(myCheckboxLabel)
+    // result.push(groupDiv)
+    parentDiv.append(groupDiv)
   }
+
+  // return result
+  return parentDiv
+}
+
+function parseFileInput(field, idx) {
+  let parentDiv = document.createElement('div')
+  // parentDiv.classList.add('custom-file')
+
+
+  let myInput = document.createElement('input')
+  myInput.type = field.type
+  myInput.setAttribute('id', idx)
+  // myInput.classList.add('custom-file-input')
+
+  // let myLabel = document.createElement('label')
+  // myLabel.setAttribute('for', idx)
+  // myLabel.textContent = 'Выберите файл'
+  // myLabel.classList.add('custom-file-label')
+
+  // parentDiv.append(myLabel)
+  parentDiv.append(myInput)
+
+  myInput.addEventListener('change', e => readImgFile(e))
+
 
   return parentDiv
 }
-// function parseSelect(input, techArr) {
-//   for (const option in techArr) {
-//     let myOption = document.createElement('option')
-//     myOption.textContent = techArr[option]
-//     myOption.value = techArr[option]
-
-//     input.appendChild(myOption)
-//   }
-// }
 
 
 function populateRefs(refs) {
@@ -210,7 +273,7 @@ function populateRefs(refs) {
       myInput.required = refs[i].input.required
       myInput.checked = refs[i].input.checked
 
-      myFormGroup.appendChild(myInput)
+      myFormGroup.append(myInput)
 
     }
 
@@ -222,7 +285,7 @@ function populateRefs(refs) {
       
       myLabel.textContent = refs[i].label
 
-      myFormGroup.appendChild(myLabel)
+      myFormGroup.append(myLabel)
     }
 
 
@@ -231,7 +294,7 @@ function populateRefs(refs) {
       myPar.classList.add('check__text')
       myPar.textContent = refs[i]['text without ref']
 
-      myFormGroup.appendChild(myPar)
+      myFormGroup.append(myPar)
     }
 
     if (refs[i].text) {
@@ -239,7 +302,7 @@ function populateRefs(refs) {
       myPar2.classList.add('check__text')
       myPar2.textContent = refs[i].text
 
-      myFormGroup.appendChild(myPar2)
+      myFormGroup.append(myPar2)
     }
 
     // what it is?
@@ -248,8 +311,8 @@ function populateRefs(refs) {
       // ????
     }
 
-    myRefsContainer.appendChild(myFormGroup)
-    form.appendChild(myRefsContainer)
+    myRefsContainer.append(myFormGroup)
+    form.append(myRefsContainer)
   }
 }
 
@@ -269,10 +332,10 @@ function populateBtns(btns) {
       myBtn.classList.add('btn-danger')
     }
 
-    myBtnsContainer.appendChild(myBtn)
+    myBtnsContainer.append(myBtn)
   }
 
-  form.appendChild(myBtnsContainer)
+  form.append(myBtnsContainer)
 }
 
 
@@ -283,6 +346,7 @@ function resetForm() {
 
   uploadInput.value = ''
   form.textContent = ''
+  // form.remove(myFormGroup)
   header.textContent = ''
   formContainer.classList.add('hide')
 }
