@@ -63,9 +63,7 @@ function parseFile(readerResult) {
 
 
 function populateFields(fields) {
-  // console.log(fields);
   for (let i = 0; i < fields.length; i++) {
-    // console.log(fields[i]);
     let myFormGroup = document.createElement('div')
     myFormGroup.classList.add('form-group')
 
@@ -81,15 +79,13 @@ function populateFields(fields) {
 
 
     for (const attr in fields[i].input) {
-      // console.log(attr, fields[i].input[attr]);
-
-      // parse mask
+      // mask
       if (attr === 'mask') {
         parseInputWithMask(myInput, fields[i].input[attr])
       }
       
 
-      // parse multiple select  "technologies"
+      // multiple select  "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
         // OR 
         // myInput = document.createElement('select')
@@ -198,22 +194,18 @@ function populateRefs(refs) {
 
 
   for (let i = 0; i < refs.length; i++) {
-    // console.log(refs[i]);
     let myFormGroup = document.createElement('div')
-    // ?
+
     myFormGroup.classList.add('form-group')
 
 
     if (refs[i].input) {
-      // console.log(refs[i].input);
       myFormGroup.classList.add('form-check')
   
       let myInput = document.createElement('input')
       myInput.classList.add('form-check-input')
 
 
-      // ?? add func for parsing inputs ?
-      // AND check if attrs exists
       myInput.type = refs[i].input.type
       myInput.required = refs[i].input.required
       myInput.checked = refs[i].input.checked
@@ -234,30 +226,19 @@ function populateRefs(refs) {
     }
 
 
-    // what it is?
     if (refs[i]['text without ref']) {
-      // console.log(refs[i]['text without ref']);
-
       let myPar = document.createElement('p')
-      // myPar.classList.add('???') add class anotherr
       myPar.classList.add('check__text')
       myPar.textContent = refs[i]['text without ref']
 
-
-      // ?
       myFormGroup.appendChild(myPar)
     }
 
-    // what it is?
     if (refs[i].text) {
-      // console.log(refs[i].text);
-      
       let myPar2 = document.createElement('p')
-      // myDiv.classList.add('???') add class
       myPar2.classList.add('check__text')
       myPar2.textContent = refs[i].text
 
-      // ?
       myFormGroup.appendChild(myPar2)
     }
 
@@ -279,11 +260,10 @@ function populateBtns(btns) {
 
   for (let i = 0; i < btns.length; i++) {
     let myBtn = document.createElement('button')
-    myBtn.classList.add('btn', 'btn-primary', ) // and classes another
+    myBtn.classList.add('btn', 'btn-primary', )
 
     myBtn.textContent = btns[i].text
 
-    // not sure !!!
     myBtn.classList.add('btn-success')
     if (btns[i].text.toLowerCase() === 'cancel' ) {
       myBtn.classList.add('btn-danger')

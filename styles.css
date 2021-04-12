@@ -1,30 +1,9 @@
-/* * {
-  margin: 0;
-  padding: 0;
-} */
-
 body {
   background-color: rgb(231, 229, 229);
 }
 
-/* ??? */
-/* button {
-  max-width: 10em;
-  width: 100%;
-} */
-
-label {
-  margin-bottom: .5rem;
-}
-
 .form-check {
   cursor: pointer;
-}
-
-.container {
-  height: 100%;
-  min-height: 100vh;
-  padding-top: 3em;
 }
 
 .hide {
@@ -37,17 +16,10 @@ label {
   padding: 1em;
 }
 
-#form-container {
-  margin-bottom: 3em;
-}
-
 #form-container > div.card-body {
   border-bottom: 1px solid rgb(202, 202, 202);
 }
 
-#form > .form-group {
-  padding-bottom: 1em;
-}
 
 .refs-container {
   padding: 1em 0;
