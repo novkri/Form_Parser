@@ -54,9 +54,9 @@ function parseFile(readerResult) {
     
     result.fields ? populateFields(result.fields) : ''
     
-    result.references ? populateFields(result.references) : ''
+    result.references ? populateRefs(result.references) : ''
 
-    result.buttons ? populateFields(result.buttons) : ''
+    result.buttons ? populateBtns(result.buttons) : ''
 
   } catch (error) {
     console.log(error);
@@ -267,19 +267,19 @@ function parseColors(colors) {
   return parentDiv
 }
 
+
 function populateRefs(refs) {
   let myRefsContainer = document.createElement('div')
   myRefsContainer.classList.add('refs-container')
 
 
   for (let i = 0; i < refs.length; i++) {
-    let myFormGroup = document.createElement('div')
-
-    myFormGroup.classList.add('form-group')
+    let myRefsGroup = document.createElement('div')
+    myRefsGroup.classList.add('form-group', 'refs-group')
 
 
     if (refs[i].input) {
-      myFormGroup.classList.add('form-check')
+      myRefsGroup.classList.add('form-check')
   
       let myInput = document.createElement('input')
       myInput.classList.add('form-check-input')
@@ -289,45 +289,38 @@ function populateRefs(refs) {
       myInput.required = required
       checked === 'true' ? myInput.checked = true : myInput.checked = false 
 
-      myFormGroup.append(myInput)
+      myRefsGroup.append(myInput)
 
     }
 
     if (refs[i].label) {
-      console.log(refs[i].label);
-      
       let myLabel = document.createElement('label')
       myLabel.classList.add('form-check-label')
       
       myLabel.textContent = refs[i].label
 
-      myFormGroup.append(myLabel)
+      myRefsGroup.append(myLabel)
     }
 
 
     if (refs[i]['text without ref']) {
       let myPar = document.createElement('p')
-      myPar.classList.add('check__text')
+      myPar.classList.add('ref__text')
       myPar.textContent = refs[i]['text without ref']
 
-      myFormGroup.append(myPar)
+      myRefsGroup.append(myPar)
     }
 
     if (refs[i].text) {
-      let myPar2 = document.createElement('p')
-      myPar2.classList.add('check__text')
+      let myPar2 = document.createElement('a')
+      myPar2.classList.add('ref__link')
       myPar2.textContent = refs[i].text
-
-      myFormGroup.append(myPar2)
+      myPar2.setAttribute('href', refs[i].ref)
+      myRefsGroup.append(myPar2)
+      
     }
 
-    // what it is?
-    if (refs[i].ref) {
-      // console.log(refs[i].ref);
-      // ????
-    }
-
-    myRefsContainer.append(myFormGroup)
+    myRefsContainer.append(myRefsGroup)
     form.append(myRefsContainer)
   }
 }
