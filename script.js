@@ -80,14 +80,33 @@ function readImgFile(e, allowedTypes, filetypes) {
   }
 }
 
+
+function createMyElem(tag, classes, innerText, ...attributes) {
+  let node = document.createElement(tag)
+  node.textContent = innerText
+  node.classList.add(...classes)
+
+  if (attributes) {
+    for (let i = 0; i < attributes.length; i++) {
+      const {nameAttr, valueAttr} = attributes[i]
+      node.setAttribute(nameAttr, valueAttr)
+    }
+  }
+
+  return node
+}
+
+
 function populateFields(fields) {
   for (let i = 0; i < fields.length; i++) {
-    let myFormGroup = document.createElement('div')
-    myFormGroup.classList.add('form-group')
+    let myFormGroup = createMyElem('div', ['form-group'])
+    // let myFormGroup = document.createElement('div')
+    // myFormGroup.classList.add('form-group')
 
-    let myLabel = document.createElement('label')
-    myLabel.setAttribute('for', i)
-    myLabel.textContent = fields[i].label
+    let myLabel = createMyElem('label', [], fields[i].label, )
+    // let myLabel = document.createElement('label')
+    // myLabel.setAttribute('for', i)
+    // myLabel.textContent = fields[i].label
 
     let myInput = document.createElement('input')
     myInput.setAttribute('id', i)
