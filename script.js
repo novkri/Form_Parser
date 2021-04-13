@@ -2,15 +2,14 @@ const formContainer = document.getElementById('form-container')
 const form = document.getElementById('form')
 const header = document.getElementById('filename')
 
-const uploadInput = document.getElementById('upload')
-const uploadGroup = document.getElementById('upload-group')
+const uploadButton = document.getElementById('upload')
+const mainUploadForm = document.getElementById('upload-group')
 
 const resetBtn = document.getElementById('resetBtn')
 
 
-uploadInput.addEventListener('change', readFile)
+uploadButton.addEventListener('change', readFile)
 resetBtn.addEventListener('click', resetForm)
-
 
 formContainer.classList.add('hide')
 
@@ -20,7 +19,7 @@ divError.classList.add('alert', 'alert-danger')
 let reader = new FileReader()
 
 function readFile() {
-  const currentFile = uploadInput.files[0]
+  const currentFile = uploadButton.files[0]
 
   // let reader = new FileReader()
   reader.readAsText(currentFile)
@@ -41,34 +40,32 @@ function parseFile(readerResult) {
     const result = JSON.parse(readerResult)
 
     formContainer.classList.remove('hide')
-    uploadGroup.classList.add('hide')
+    mainUploadForm.classList.add('hide')
     resetBtn.classList.remove('hide')
 
 
-    if (uploadGroup.contains(divError)) {
-      uploadGroup.removeChild(divError)
+    if (mainUploadForm.contains(divError)) {
+      mainUploadForm.removeChild(divError)
     }
 
     header.textContent = result.name
 
-    
     result.fields ? populateFields(result.fields) : ''
-    
     result.references ? populateRefs(result.references) : ''
-
     result.buttons ? populateBtns(result.buttons) : ''
 
   } catch (error) {
     console.log(error);
-    uploadGroup.append(divError)
+    mainUploadForm.append(divError)
   }
 }
+
+
 
 function readImgFile(e, allowedTypes, filetypes) {
   const currentFiles = e.target.files
 
   for (const file of currentFiles) {
-    console.log(filetypes.join(', '));
     // ?
     if (allowedTypes.includes(file.type)) {
       let reader = new FileReader()
@@ -79,7 +76,6 @@ function readImgFile(e, allowedTypes, filetypes) {
     } else {
       e.target.value = ''
       alert(`Допустимые форматы файлов: ${filetypes.join(', ')}`);
-      console.log('error');
     }
   }
 }
@@ -89,16 +85,14 @@ function populateFields(fields) {
     let myFormGroup = document.createElement('div')
     myFormGroup.classList.add('form-group')
 
-    let myCheckBoxContainer
-
     let myLabel = document.createElement('label')
     myLabel.setAttribute('for', i)
+    myLabel.textContent = fields[i].label
 
     let myInput = document.createElement('input')
     myInput.setAttribute('id', i)
 
-
-    myLabel.textContent = fields[i].label
+    let myCheckBoxContainer
 
 
     for (const attr in fields[i].input) {
@@ -132,22 +126,18 @@ function populateFields(fields) {
       }
       
 
-      // multiple select  "technologies"
+      // multiple select "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
         myInput = parseSelectWithCheckboxes(fields[i].input['technologies'])
-        // myInput.replaceWith(...parseSelectWithCheckboxes(fields[i].input['technologies']))
-      
       }
 
-      // parse file filetype
-      if (attr === 'type' && fields[i].input[attr] === 'file') {
-        if (fields[i].input.filetype) {
-          let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
-          let typesString = imgTypes.join(', ')
-          myInput.setAttribute('accept', typesString)
+      //  filetype
+      if (attr === 'type' && fields[i].input[attr] === 'file' && fields[i].input.filetype) {
+        let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
+        let typesString = imgTypes.join(', ')
+        myInput.setAttribute('accept', typesString)
 
-          myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
-        }
+        myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
       }
 
       // parse color colors
@@ -280,7 +270,8 @@ function populateRefs(refs) {
 
     if (refs[i].input) {
       myRefsGroup.classList.add('form-check')
-  
+      myRefsContainer.classList.add('with-checkbox')
+
       let myInput = document.createElement('input')
       myInput.classList.add('form-check-input')
 
@@ -290,7 +281,6 @@ function populateRefs(refs) {
       checked === 'true' ? myInput.checked = true : myInput.checked = false 
 
       myRefsGroup.append(myInput)
-
     }
 
     if (refs[i].label) {
@@ -315,9 +305,8 @@ function populateRefs(refs) {
       let myPar2 = document.createElement('a')
       myPar2.classList.add('ref__link')
       myPar2.textContent = refs[i].text
-      myPar2.setAttribute('href', refs[i].ref)
+      myPar2.setAttribute('href', `/${refs[i].ref}`)
       myRefsGroup.append(myPar2)
-      
     }
 
     myRefsContainer.append(myRefsGroup)
@@ -350,12 +339,12 @@ function populateBtns(btns) {
 
 // reset
 function resetForm() {
-  uploadGroup.classList.remove('hide')
-  resetBtn.classList.add('hide')
   reader.abort()
-  uploadInput.value = ''
-  
+  mainUploadForm.classList.remove('hide')
+  resetBtn.classList.add('hide')
+  formContainer.classList.add('hide')
+
+  uploadButton.value = ''
   form.textContent = ''
   header.textContent = ''
-  formContainer.classList.add('hide')
 }

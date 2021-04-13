@@ -2,7 +2,15 @@ body {
   background-color: rgb(231, 229, 229);
 }
 
+h1#filename {
+  word-break: break-all;
+}
+
 .form-check {
+  cursor: pointer;
+}
+
+.form-check-input {
   cursor: pointer;
 }
 
@@ -16,6 +24,10 @@ body {
   padding: 1em;
 }
 
+.card-header {
+  background-color: #fff;
+}
+
 #form-container > div.card-body {
   border-bottom: 1px solid rgb(202, 202, 202);
 }
@@ -26,20 +38,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
 }
 
 .refs-group {
   display: flex;
   align-items: center;
+  cursor: default;
+  flex-wrap: wrap;
+}
+
+.with-checkbox {
+  flex-direction: row;
 }
 
 .ref__text {
   display: inline-flex;
   margin: 0;
+  padding-right: .5em;
 }
 
 .ref__link {
-  padding: 0 .5em;
+  padding-right: .5em;
+  cursor: pointer;
+  /* font-size: 1.1rem; */
 }
 
 .btns-container {
@@ -50,6 +73,10 @@ body {
 .alert {
   margin-top: 1em;
   margin-bottom: 0 !important;
+}
+
+.custom-file-input {
+  cursor: pointer;
 }
 
 .custom-file-input:lang(en)~.custom-file-label::after {
@@ -67,6 +94,12 @@ body {
   cursor: pointer;
 }
 
+.reset {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
 /* // Малые девайсы («ландшафтные», < 768px) */
 @media (min-width: 575.98px) { 
   .card {
@@ -75,7 +108,12 @@ body {
  }
 
 /* // Средние девайсы («таблетки», < 992px)  */
-@media (min-width: 767.98px) {  }
+@media (min-width: 767.98px) { 
+  .reset {
+    display: block;
+    width: initial;
+  }
+ }
 
 /* // Большие девайсы (большие десктопы, < 1200px) */
 @media (min-width: 991.98px) { 
