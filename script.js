@@ -81,32 +81,14 @@ function readImgFile(e, allowedTypes, filetypes) {
 }
 
 
-function createMyElem(tag, classes, innerText, ...attributes) {
-  let node = document.createElement(tag)
-  node.textContent = innerText
-  node.classList.add(...classes)
-
-  if (attributes) {
-    for (let i = 0; i < attributes.length; i++) {
-      const {nameAttr, valueAttr} = attributes[i]
-      node.setAttribute(nameAttr, valueAttr)
-    }
-  }
-
-  return node
-}
-
-
 function populateFields(fields) {
   for (let i = 0; i < fields.length; i++) {
-    let myFormGroup = createMyElem('div', ['form-group'])
-    // let myFormGroup = document.createElement('div')
-    // myFormGroup.classList.add('form-group')
+    let myFormGroup = document.createElement('div')
+    myFormGroup.classList.add('form-group')
 
-    let myLabel = createMyElem('label', [], fields[i].label, )
-    // let myLabel = document.createElement('label')
-    // myLabel.setAttribute('for', i)
-    // myLabel.textContent = fields[i].label
+    let myLabel = document.createElement('label')
+    myLabel.setAttribute('for', i)
+    myLabel.textContent = fields[i].label
 
     let myInput = document.createElement('input')
     myInput.setAttribute('id', i)
@@ -121,7 +103,9 @@ function populateFields(fields) {
         case 'checkbox':
           myCheckBoxContainer = document.createElement('div')
           myCheckBoxContainer.classList.add('form-check')
+
           myInput.classList.add('form-check-input')
+
           fields[i].input.checked === 'true' ? myInput.checked = true : myInput.checked = false 
           break;
         case 'file': 
@@ -147,7 +131,7 @@ function populateFields(fields) {
 
       // multiple select "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
-        myInput = parseSelectWithCheckboxes(fields[i].input['technologies'])
+        myInput = parseCustomInput('checkbox', fields[i].input['technologies'], 'technologies')
       }
 
       //  filetype
@@ -161,7 +145,7 @@ function populateFields(fields) {
 
       // parse color colors
       if (attr === 'type' && fields[i].input[attr] === 'color') {
-        myInput = parseColors(fields[i].input['colors'])
+        myInput = parseCustomInput('radio', fields[i].input['colors'], 'colors')
       }
     }
 
@@ -219,62 +203,45 @@ function parseInputWithMask(input, mask) {
   input.addEventListener('input', e => inputHandler(e));
 }
 
-function parseSelectWithCheckboxes(techArr) {
+function parseCustomInput(buttonsType, data, type) {
   let parentDiv = document.createElement('div')
-  // let result = []
 
-  for (const option in techArr) {
+  for (const option in data) {
     let groupDiv = document.createElement('div')
     groupDiv.classList.add('form-check')
 
-    let myCheckBox = document.createElement('input')
-    myCheckBox.type = 'checkbox'
-    myCheckBox.setAttribute('value', techArr[option])
-    myCheckBox.setAttribute('id', techArr[option])
-    myCheckBox.classList.add('form-check-input')
+    let myButton = document.createElement('input')
+    myButton.type = buttonsType
+    myButton.setAttribute('value', data[option])
+    myButton.setAttribute('id', data[option])
+    myButton.setAttribute('name', `select${buttonsType}`)
+    myButton.classList.add('form-check-input')
 
-    let myCheckboxLabel = document.createElement('label')
-    myCheckboxLabel.setAttribute('for', techArr[option])
-    myCheckboxLabel.textContent = techArr[option]
-    myCheckboxLabel.classList.add('form-check-label')
+    let myButtonLabel = document.createElement('label')
+    myButtonLabel.setAttribute('for', data[option])
 
-
-    groupDiv.append(myCheckBox)
-    groupDiv.append(myCheckboxLabel)
-    // result.push(groupDiv)
-    parentDiv.append(groupDiv)
-  }
-
-  // return result
-  return parentDiv
-}
-function parseColors(colors) {
-  let parentDiv = document.createElement('div')
-
-  for (const option in colors) {
-    let groupDiv = document.createElement('div')
-    groupDiv.classList.add('form-check')
-
-    let myRadio = document.createElement('input')
-    myRadio.type = 'radio'
-    myRadio.setAttribute('value', colors[option])
-    myRadio.setAttribute('id', colors[option])
-    myRadio.setAttribute('name', 'selectColor')
-    myRadio.classList.add('form-check-input')
-
-    let myRadioLabel = document.createElement('label')
-    myRadioLabel.setAttribute('for', colors[option])
-    myRadioLabel.classList.add('form-check-label', 'color-label')
-    myRadioLabel.style.backgroundColor = colors[option]
+    switch (type) {
+      case 'technologies':
+        myButtonLabel.textContent = data[option]
+        myButtonLabel.classList.add('form-check-label')
+        break;
+      case 'colors':
+        myButtonLabel.classList.add('form-check-label', 'color-label')
+        myButtonLabel.style.backgroundColor = data[option]
+        break;
+      default:
+        break;
+    }
 
 
-    groupDiv.append(myRadio)
-    groupDiv.append(myRadioLabel)
+    groupDiv.append(myButton)
+    groupDiv.append(myButtonLabel)
     parentDiv.append(groupDiv)
   }
 
   return parentDiv
 }
+
 
 
 function populateRefs(refs) {
