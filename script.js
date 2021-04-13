@@ -17,11 +17,12 @@ formContainer.classList.add('hide')
 let divError = document.createElement('div')
 divError.classList.add('alert', 'alert-danger')
 
+let reader = new FileReader()
 
 function readFile() {
   const currentFile = uploadInput.files[0]
 
-  let reader = new FileReader()
+  // let reader = new FileReader()
   reader.readAsText(currentFile)
 
   reader.onload = function() {
@@ -50,22 +51,21 @@ function parseFile(readerResult) {
 
     header.textContent = result.name
 
-    // fields 
-    populateFields(result.fields)
-    // refs IF exists, TODO: check
-    populateRefs(result.references)
-    // buttons IF exists
-    populateBtns(result.buttons)
+    
+    result.fields ? populateFields(result.fields) : ''
+    
+    result.references ? populateFields(result.references) : ''
+
+    result.buttons ? populateFields(result.buttons) : ''
+
   } catch (error) {
+    console.log(error);
     uploadGroup.append(divError)
   }
 }
 
-// ???
 function readImgFile(e, allowedTypes, filetypes) {
   const currentFiles = e.target.files
-
-  
 
   for (const file of currentFiles) {
     console.log(filetypes.join(', '));
@@ -81,8 +81,6 @@ function readImgFile(e, allowedTypes, filetypes) {
       alert(`Допустимые форматы файлов: ${filetypes.join(', ')}`);
       console.log('error');
     }
-
-    
   }
 }
 
@@ -91,11 +89,12 @@ function populateFields(fields) {
     let myFormGroup = document.createElement('div')
     myFormGroup.classList.add('form-group')
 
+    let myCheckBoxContainer
+
     let myLabel = document.createElement('label')
     myLabel.setAttribute('for', i)
 
     let myInput = document.createElement('input')
-    myInput.classList.add('form-control')
     myInput.setAttribute('id', i)
 
 
@@ -104,6 +103,28 @@ function populateFields(fields) {
 
     for (const attr in fields[i].input) {
       myInput[attr] = fields[i].input[attr]
+
+      switch (fields[i].input.type) {
+        case 'checkbox':
+          myCheckBoxContainer = document.createElement('div')
+          myCheckBoxContainer.classList.add('form-check')
+          myInput.classList.add('form-check-input')
+          fields[i].input.checked === 'true' ? myInput.checked = true : myInput.checked = false 
+          break;
+        case 'file': 
+          myInput.classList.add('form-control-file')
+          break;
+        case 'technology':
+          myInput.classList.add('technology')
+          break;
+        // ?
+        case 'color':
+          myInput.classList.add('color')
+          break;
+        default:
+          myInput.classList.add('form-control')
+          break;
+      }
 
       // mask
       if (attr === 'mask') {
@@ -120,8 +141,6 @@ function populateFields(fields) {
 
       // parse file filetype
       if (attr === 'type' && fields[i].input[attr] === 'file') {
-        myInput.classList.replace('form-control', 'form-control-file')
-
         if (fields[i].input.filetype) {
           let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
           let typesString = imgTypes.join(', ')
@@ -132,11 +151,20 @@ function populateFields(fields) {
       }
 
       // parse color colors
+      if (attr === 'type' && fields[i].input[attr] === 'color') {
+        myInput = parseColors(fields[i].input['colors'])
+      }
     }
 
-
-    myFormGroup.append(myLabel)
-    myFormGroup.append(myInput)
+    if (myCheckBoxContainer) {
+      myCheckBoxContainer.append(myInput)
+      myCheckBoxContainer.append(myLabel)
+      myFormGroup.append(myCheckBoxContainer)
+    } else {
+      myFormGroup.append(myLabel)
+      myFormGroup.append(myInput)
+    }
+    
     form.append(myFormGroup)
   }
 }
@@ -211,7 +239,33 @@ function parseSelectWithCheckboxes(techArr) {
   // return result
   return parentDiv
 }
+function parseColors(colors) {
+  let parentDiv = document.createElement('div')
 
+  for (const option in colors) {
+    let groupDiv = document.createElement('div')
+    groupDiv.classList.add('form-check')
+
+    let myRadio = document.createElement('input')
+    myRadio.type = 'radio'
+    myRadio.setAttribute('value', colors[option])
+    myRadio.setAttribute('id', colors[option])
+    myRadio.setAttribute('name', 'selectColor')
+    myRadio.classList.add('form-check-input')
+
+    let myRadioLabel = document.createElement('label')
+    myRadioLabel.setAttribute('for', colors[option])
+    myRadioLabel.classList.add('form-check-label', 'color-label')
+    myRadioLabel.style.backgroundColor = colors[option]
+
+
+    groupDiv.append(myRadio)
+    groupDiv.append(myRadioLabel)
+    parentDiv.append(groupDiv)
+  }
+
+  return parentDiv
+}
 
 function populateRefs(refs) {
   let myRefsContainer = document.createElement('div')
@@ -233,7 +287,7 @@ function populateRefs(refs) {
       let {type, required, checked} = refs[i].input
       myInput.type = type
       myInput.required = required
-      myInput.checked = checked === true ? checked : ''
+      checked === 'true' ? myInput.checked = true : myInput.checked = false 
 
       myFormGroup.append(myInput)
 
@@ -305,8 +359,9 @@ function populateBtns(btns) {
 function resetForm() {
   uploadGroup.classList.remove('hide')
   resetBtn.classList.add('hide')
-
+  reader.abort()
   uploadInput.value = ''
+  
   form.textContent = ''
   header.textContent = ''
   formContainer.classList.add('hide')

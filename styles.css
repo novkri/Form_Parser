@@ -47,6 +47,16 @@ body {
   content: "Загрузить";
 }
 
+.form-control[type="color"] {
+  width: 100px;
+}
+
+.color-label {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 /* // Малые девайсы («ландшафтные», < 768px) */
 @media (min-width: 575.98px) { 
