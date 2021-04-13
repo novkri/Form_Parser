@@ -62,21 +62,24 @@ function parseFile(readerResult) {
 }
 
 // ???
-function readImgFile(e) {
+function readImgFile(e, allowedTypes, filetypes) {
   const currentFiles = e.target.files
 
-  console.log(currentFiles);
+  
 
   for (const file of currentFiles) {
-    console.log(file);
+    console.log(filetypes.join(', '));
     // ?
-    if (file.type !== `image/png`) {
-      // return 
-      console.log('error');
-    } else {
+    if (allowedTypes.includes(file.type)) {
       let reader = new FileReader()
       reader.readAsDataURL(file)
       console.log(reader.result);
+      // todo something with result...
+      
+    } else {
+      e.target.value = ''
+      alert(`Допустимые форматы файлов: ${filetypes.join(', ')}`);
+      console.log('error');
     }
 
     
@@ -123,10 +126,9 @@ function populateFields(fields) {
           let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
           let typesString = imgTypes.join(', ')
           myInput.setAttribute('accept', typesString)
+
+          myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
         }
-        
-        myInput.addEventListener('change', e => readImgFile(e))
-      
       }
 
       // parse color colors
