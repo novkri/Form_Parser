@@ -13,15 +13,16 @@ resetBtn.addEventListener('click', resetForm)
 
 formContainer.classList.add('hide')
 
+
 let divError = document.createElement('div')
 divError.classList.add('alert', 'alert-danger')
 
-let reader = new FileReader()
+
 
 function readFile() {
   const currentFile = uploadButton.files[0]
 
-  // let reader = new FileReader()
+  let reader = new FileReader()
   reader.readAsText(currentFile)
 
   reader.onload = function() {
@@ -62,17 +63,20 @@ function parseFile(readerResult) {
 
 
 
-function readImgFile(e, allowedTypes, filetypes) {
+function readImgFile(e, allowedTypes = '', filetypes) {
   const currentFiles = e.target.files
 
   for (const file of currentFiles) {
-    // ?
-    if (allowedTypes.includes(file.type)) {
-      let reader = new FileReader()
-      reader.readAsDataURL(file)
-      console.log(reader.result);
-      // todo something with result...
-      
+    if (!allowedTypes || allowedTypes.includes(file.type)) {
+      let readerImg = new FileReader()
+
+      readerImg.readAsDataURL(file)
+
+      readerImg.onload = function() {
+        // todo something with result...  
+        console.log(readerImg.result);
+      }
+          
     } else {
       e.target.value = ''
       alert(`Допустимые форматы файлов: ${filetypes.join(', ')}`);
@@ -112,11 +116,8 @@ function populateFields(fields) {
           myInput.classList.add('form-control-file')
           break;
         case 'technology':
-          myInput.classList.add('technology')
-          break;
-        // ?
         case 'color':
-          myInput.classList.add('color')
+          myInput.classList.add('custom-field')
           break;
         default:
           myInput.classList.add('form-control')
@@ -129,21 +130,24 @@ function populateFields(fields) {
       }
       
 
-      // multiple select "technologies"
+      // "technologies"
       if (attr === 'type' && fields[i].input[attr] === 'technology') {
         myInput = parseCustomInput('checkbox', fields[i].input['technologies'], 'technologies')
       }
 
-      //  filetype
-      if (attr === 'type' && fields[i].input[attr] === 'file' && fields[i].input.filetype) {
-        let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
-        let typesString = imgTypes.join(', ')
-        myInput.setAttribute('accept', typesString)
+      // filetype
+      if (attr === 'type' && fields[i].input[attr] === 'file') {
 
-        myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
+        if (fields[i].input.filetype) {
+          let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
+          myInput.setAttribute('accept', imgTypes.join(', '))
+          myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
+        } else {
+          myInput.addEventListener('change', e => readImgFile(e))
+        }
       }
 
-      // parse color colors
+      // colors
       if (attr === 'type' && fields[i].input[attr] === 'color') {
         myInput = parseCustomInput('radio', fields[i].input['colors'], 'colors')
       }
@@ -183,7 +187,6 @@ function parseInputWithMask(input, mask) {
       while (maskIndex < maskLength) {
         if (maskIndex >= value.length) break;
 
-        // Если сопоставлений не было, метод вернёт значение null.
         if (mask[maskIndex] === "9" && value[valueIndex].match(numberPattern) === null) break; 
 
         while (mask[maskIndex].match(literalPattern) === null) {
@@ -311,10 +314,9 @@ function populateBtns(btns) {
 
     myBtn.textContent = btns[i].text
 
-    myBtn.classList.add('btn-success')
-    if (btns[i].text.toLowerCase() === 'cancel' ) {
-      myBtn.classList.add('btn-danger')
-    }
+    
+    btns[i].text.toLowerCase() === 'cancel' ? 
+      myBtn.classList.add('btn-danger') : myBtn.classList.add('btn-success')
 
     myBtnsContainer.append(myBtn)
   }
@@ -323,9 +325,8 @@ function populateBtns(btns) {
 }
 
 
-// reset
+
 function resetForm() {
-  reader.abort()
   mainUploadForm.classList.remove('hide')
   resetBtn.classList.add('hide')
   formContainer.classList.add('hide')

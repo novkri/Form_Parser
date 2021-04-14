@@ -38,7 +38,6 @@ h1#filename {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* flex-wrap: wrap; */
   flex-direction: column;
 }
 
@@ -99,29 +98,29 @@ h1#filename {
   width: 100%;
 }
 
-/* // Малые девайсы («ландшафтные», < 768px) */
+
 @media (min-width: 575.98px) { 
   .card {
     max-width: 90%;
   }
- }
+}
 
-/* // Средние девайсы («таблетки», < 992px)  */
+
 @media (min-width: 767.98px) { 
   .reset {
     display: block;
     width: initial;
   }
- }
+}
 
-/* // Большие девайсы (большие десктопы, < 1200px) */
+
 @media (min-width: 991.98px) { 
   .card {
     max-width: 80%;
   }
- }
+}
 
-/* // Экстрабольшие девайсы (большие десктопы) */
+
 @media (min-width: 1199.98px) { 
   .card {
     max-width: 60%;
