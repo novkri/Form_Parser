@@ -28,10 +28,6 @@ function readFile() {
   reader.onload = function() {
     parseFile(reader.result)
   }
-
-  reader.onerror = function() {
-    console.log(reader.error);
-  }
 }
 
 function parseFile(readerResult) {
@@ -56,32 +52,65 @@ function parseFile(readerResult) {
     result.buttons ? populateBtns(result.buttons) : ''
 
   } catch (error) {
-    console.log(error);
     mainUploadForm.append(divError)
   }
 }
 
 
 
-function readImgFile(e, allowedTypes = '', filetypes) {
+function readImgFile(e, allowedTypes) {
+
+  let oldPreviewContainer = document.getElementsByClassName('preview-container')
+  while(oldPreviewContainer.length > 0){
+    oldPreviewContainer[0].parentNode.removeChild(oldPreviewContainer[0]);
+  }
+
+
+  let cuurentPreviewContainer = document.createElement('div')
+  cuurentPreviewContainer.classList.add('preview-container')
+
+
+
   const currentFiles = e.target.files
 
   for (const file of currentFiles) {
-    if (!allowedTypes || allowedTypes.includes(file.type)) {
-      let readerImg = new FileReader()
+    let isAnyFileCorrectType = false
 
-      readerImg.readAsDataURL(file)
+    for (const iterator of allowedTypes) {
+      if (file.type.includes(iterator)) {
+        isAnyFileCorrectType = true
+        let readerImg = new FileReader()
 
-      readerImg.onload = function() {
-        // todo something with result...  
-        console.log(readerImg.result);
-      }
+        readerImg.readAsDataURL(file)
+      
+        readerImg.onload = function() {
+
+        let preview
+          if (file.type.includes('image/')) {
+            preview = document.createElement('img')
+            preview.setAttribute('src', readerImg.result)
+          } else {
+            preview = document.createElement('span')
+            preview.textContent = file.name
+          }
           
-    } else {
+          preview.classList.add('preview')
+          preview.setAttribute('id', `preview${e.target.id}`) 
+          
+          cuurentPreviewContainer.appendChild(preview)
+          // e.target.after(preview)
+
+        }
+      }
+    }
+
+    if (!isAnyFileCorrectType) {
       e.target.value = ''
-      alert(`Допустимые форматы файлов: ${filetypes.join(', ')}`);
+      alert(`Допустимые форматы файлов: ${allowedTypes.join(', ')}`)
     }
   }
+
+  e.target.after(cuurentPreviewContainer)
 }
 
 
@@ -137,13 +166,11 @@ function populateFields(fields) {
 
       // filetype
       if (attr === 'type' && fields[i].input[attr] === 'file') {
-
         if (fields[i].input.filetype) {
-          let imgTypes = Object.values(fields[i].input.filetype).map(key => `image/${key}`)
-          myInput.setAttribute('accept', imgTypes.join(', '))
-          myInput.addEventListener('change', e => readImgFile(e, imgTypes, fields[i].input.filetype))
+          setAcceptedFileTypes(myInput, fields[i].input.filetype)
         } else {
-          myInput.addEventListener('change', e => readImgFile(e))
+          let allImgTypes = ["png", "jpg", "jpeg"]
+          setAcceptedFileTypes(myInput, allImgTypes)
         }
       }
 
@@ -166,6 +193,14 @@ function populateFields(fields) {
   }
 }
 
+
+function setAcceptedFileTypes(input, initFiletypes) {
+  let imgTypes = Object.values(initFiletypes).map(key => `.${key}`).join(', ')
+  input.setAttribute('accept', imgTypes)
+  input.addEventListener('change', e => readImgFile(e, initFiletypes))
+}
+
+
 function parseInputWithMask(input, mask) {
   input.type = 'text'
   input.placeholder = mask
@@ -179,28 +214,24 @@ function parseInputWithMask(input, mask) {
 
     let newValue = "";
 
-    try {
-      const maskLength = mask.length;
-      let valueIndex = 0;
-      let maskIndex = 0;
+    const maskLength = mask.length;
+    let valueIndex = 0;
+    let maskIndex = 0;
 
-      while (maskIndex < maskLength) {
-        if (maskIndex >= value.length) break;
+    while (maskIndex < maskLength) {
+      if (maskIndex >= value.length) break;
 
-        if (mask[maskIndex] === "9" && value[valueIndex].match(numberPattern) === null) break; 
+      if (mask[maskIndex] === "9" && value[valueIndex].match(numberPattern) === null) break; 
 
-        while (mask[maskIndex].match(literalPattern) === null) {
-          if (value[valueIndex] === mask[maskIndex]) break;
-          newValue += mask[maskIndex++];
-        }
-        newValue += value[valueIndex++];
-        maskIndex++;
+      while (mask[maskIndex].match(literalPattern) === null) {
+        if (value[valueIndex] === mask[maskIndex]) break;
+        newValue += mask[maskIndex++];
       }
-
-      input.value = newValue;
-    } catch (e) {
-      console.log(e);
+      newValue += value[valueIndex++];
+      maskIndex++;
     }
+
+    input.value = newValue;
   }
 
   input.addEventListener('input', e => inputHandler(e));
@@ -310,7 +341,7 @@ function populateBtns(btns) {
 
   for (let i = 0; i < btns.length; i++) {
     let myBtn = document.createElement('button')
-    myBtn.classList.add('btn', 'btn-primary', )
+    myBtn.classList.add('btn', 'btn-primary')
 
     myBtn.textContent = btns[i].text
 

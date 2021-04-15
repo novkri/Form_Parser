@@ -98,6 +98,19 @@ h1#filename {
   width: 100%;
 }
 
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.preview {
+  width: 150px;
+  min-height: 50px;
+  height: auto;
+  margin: 1em;
+  /* background-color: #dadbdb; */
+  text-align: center;
+}
 
 @media (min-width: 575.98px) { 
   .card {
